@@ -1,0 +1,217 @@
+{% extends 'main.html' %}
+{%load static%}
+
+{%block title%}Home page{%endblock%}
+{%block content %}
+
+
+
+<div class="grid grid-flow-col grid-cols-12">
+    <!-- topic -->
+    {% include 'base/components/topics.html'%}
+
+    <div class="md:col-span-7 col-span-12">
+        <button id="show-signup-modal" data-modal-target="signup-modal" data-modal-toggle="signup-modal"
+            class="modal-btn hidden" type="button">
+        </button>
+
+        <div class="mx-10 my-10">
+            {%if not topics_only and q %}
+
+            <div>{{rooms.count}} results for "<span class="font-bold">{{q}}</span>"</div>
+            {%endif%}
+            <div class="sm:flex my-5 items-center">
+                <div class="md:text-lg text-sm text-gray-500">Rooms Available: {{room_count}}</div>
+                <div class="flex">
+                    <div class="sm:ml-6 ">
+                        <button id="dropdownRadioButton" data-dropdown-toggle="dropdownRadio"
+                            class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                            type="button">
+                            <span>
+                                All Rooms
+                            </span>
+                            <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="m1 1 4 4 4-4" />
+                            </svg>
+                        </button>
+                        <!-- Dropdown menu -->
+                        <div id="dropdownRadio"
+                            class="z-[103] hidden w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
+                            data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="top"
+                            style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate3d(522.5px, 3847.5px, 0px);">
+                            <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200"
+                                aria-labelledby="dropdownRadioButton">
+                                <li>
+                                    <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                                        <input checked="" id="all" type="radio" value="all" name="filter"
+                                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <label for="filter-radio-example-1"
+                                            class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">All
+                                            Rooms</label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                                        <input id="private" type="radio" value="private" name="filter"
+                                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <label for="filter-radio-example-2"
+                                            class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Private
+                                            Rooms</label>
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <button id="Filterdropdown" data-dropdown-toggle="filter-dropdown"
+                            class=" focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center  "
+                            type="button">
+                            <svg class="w-6 h-6 dark:fill-white fill-black" viewBox="0 0 32 32" version="1.1"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <title>bars-filter</title>
+                                <path
+                                    d="M30 6.749h-28c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h28c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0zM24 14.75h-16c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h16c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0zM19 22.75h-6.053c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h6.053c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0z">
+                                </path>
+                            </svg> </button>
+                        <!-- Dropdown menu -->
+                        <div id="filter-dropdown"
+                            class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                                aria-labelledby="dropdownDefaultButton">
+                                <li>
+                                    <a id="popular"
+                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Most
+                                        Popular</a>
+                                </li>
+
+                                <li>
+                                    <a id="recent"
+                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Recent</a>
+                                </li>
+
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="md:my-0 my-2 ml-auto">
+                    {%if request.user.is_authenticated%}
+                    <a href="{%url 'create-room' %}">
+                        <button type="button"
+                            class="text-white bg-gradient-to-r to-primary-glow-green from-green-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-primary-glow-green dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 hover:scale-110">Create
+                            Room</button>
+                    </a>
+                    {%else%}
+                    <button type="button" data-modal-target="signup-modal" data-modal-toggle="signup-modal"
+                        class="modal-btn text-white bg-gradient-to-r to-primary-glow-green from-green-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-primary-glow-green dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 hover:scale-110">Create
+                        Room</button>
+                    {%endif%}
+
+                </div>
+            </div>
+            {%for room in rooms %}
+
+            <div data-id="{{room.id}}"
+                class="rooms items-center bg-white border border-gray-200 rounded-lg w-full hover:bg-gray-100 dark:border-gray-700 dark:bg-primary-darker dark:hover:bg-primary-theme my-5 shadow-md">
+
+
+                <div class=" p-4 leading-normal">
+                    <div class="flex justify-between">
+                        <div>
+                            <img src="{% static 'img/guest.webp'%}" class="w-6 inline-block rounded-full"
+                                alt="User pfp">
+                            <a href="{%url 'profile' room.host %}" class="text-gray-400">@{{room.host}}</a>
+                        </div>
+                        <div class="text-gray-400 text-xs">
+                            {{room.updated | timesince}} ago
+                        </div>
+                    </div>
+                    <a href="{%url 'room' room.slug %}">
+                        <h5 class="my-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">{{room.name}}
+                        </h5>
+                    </a>
+                    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{room.description}}</p>
+                    <hr>
+                    <div class="flex justify-between mt-2">
+                        <div class="mt-2">
+                            <i class="fa-regular fa-user w-3 opacity-50"></i>
+                            {{room.participants.all | length}} Joined
+
+                        </div>
+                        <a href="/?q={{room.topic}}" class="mt-1">
+                            <span class="dark:bg-primary-darktheme bg-gray-300 p-2 rounded-3xl">{{room.topic}}</span>
+                        </a>
+
+
+                    </div>
+
+                    <div class="flex justify-end mt-3">
+
+                        {% if room.private %}
+                        <span title="Locked" class="locked ml-5 bg-gray-300 dark:bg-gray-800 rounded-full py-2 px-3"><i
+                                class="fa-solid fa-lock"></i></span>
+                        {%endif%}
+                        {% if request.user == room.host %}
+
+                        <a class="mx-2" href=" {% url 'update-room' room.id %}"><button type="button"
+                                class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-3 py-2 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 hover:scale-110"><i
+                                    class="fa-solid fa-pen"></i></button></a>
+                        <a data-name="{{room.name}}" data-id="{{room.id}}" class="modal-btn delete-btn"
+                            data-modal-target="small-modal1" data-modal-toggle="small-modal1"><button type=" button"
+                                class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-3 py-2 text-center  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 hover:scale-1"><i
+                                    class="fa-solid fa-trash"></i></button></a>
+
+                        {%endif%}
+                    </div>
+                </div>
+            </div>
+            {%endfor%}
+        </div>
+
+
+
+        <div id="page-btns" class="justify-center flex mb-10">
+            <div>
+                <a id="previousPage" href="#"
+                    class="px-3.5 py-2 mx-3 dark:bg-gray-800 bg-gray-200 rounded shadow-xl font-semibold">
+                    <i class="fa-solid fa-arrow-left"></i> </a>
+            </div>
+            <div id="btn-numbers">
+                <a href="."
+                    class="px-3.5 py-2 md:mx-3 mx-1 bg-gray-200 dark:bg-gray-800 rounded shadow-xl font-semibold ">1</a>
+                <a href="#"
+                    class="bg-gray-200 px-3.5 py-2 md:mx-3 mx-1 dark:bg-gray-800 rounded shadow-xl font-semibold">2</a>
+                <a href="#"
+                    class="bg-gray-200 px-3.5 py-2 md:mx-3 mx-1 dark:bg-gray-800 rounded shadow-xl font-semibold">3</a>
+                <a href="#"
+                    class="px-3.5 bg-gray-200 py-2 md:mx-3 mx-1 dark:bg-gray-800 rounded shadow-xl font-semibold">4</a>
+                <a href="#"
+                    class="px-3.5 bg-gray-200 py-2 md:mx-3 mx-1 dark:bg-gray-800 rounded shadow-xl font-semibold">5</a>
+            </div>
+
+            <div>
+                <a id="nextPage" href="#"
+                    class="px-3.5 bg-gray-200 py-2 mx-3 dark:bg-gray-800 rounded shadow-xl font-semibold"> <i
+                        class="fa-solid fa-arrow-right"></i> </a>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    {% include 'base/components/activity.html' %}
+
+</div>
+<script>
+    const last_page = parseInt('{{ last_page }}')
+</script>
+<script type="text/javascript">     window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+<script src="{% static 'js/home.js' %}" defer></script>
+
+{%endblock%}

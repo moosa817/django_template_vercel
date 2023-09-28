@@ -1,0 +1,345 @@
+{% load static %}
+{%load mytags %}
+{% if request.user.is_authenticated %}
+{% pfp_info request.user as user_info %}
+{%endif%}
+
+{% load tz %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {%if request.user%}
+    <meta id="current_user" data-user="{{request.user.username}}">
+    {%endif%}
+
+
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{room.name}}</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js'
+        integrity='sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=='
+        crossorigin='anonymous' referrerpolicy='no-referrer'></script>
+
+
+
+    <link rel="stylesheet" href="{% static 'css/dist/output.css' %}">
+    <link rel="stylesheet" href="{%static 'css/dist/style.css'%}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="{%static 'css/dist/emojionearea.min.css' %}">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.js"
+        integrity="sha512-hkvXFLlESjeYENO4CNi69z3A1puvONQV5Uh+G4TUDayZxSLyic5Kba9hhuiNLbHqdnKNMk2PxXKm0v7KDnWkYA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="{% static 'js/style.js' %}" defer></script>
+
+
+    <script src="{% static 'js/chat.js' %}" defer></script>
+</head>
+
+<body class="bg-green-50 dark:bg-primary-darktheme dark:text-white">
+
+
+    <div id="content">
+
+
+        <button id="delete-msg-btn" class="hidden" data-modal-target="deleteMsg" data-modal-toggle="deleteMsg"></button>
+
+
+        <span id="room-id" data-room-id="{{room.id}}" data-user="{{request.user}}"></span>
+
+        <div class="fixed w-full z-10">
+            <div class="flex items-center justify-between bg-gray-300 dark:bg-gray-900">
+
+                <div class="ml-4 font-semibold hover:scale-110">
+                    <a href="{% if request.GET.from == 'profile' %}{% url request.GET.from request.user %}{%else%}{% if request.GET.from %}{% url request.GET.from %}{%else%}/{%endif%}{%endif%}"
+                        class="">
+
+                        <i class="fa-solid fa-arrow-left"></i> <span class="hidden md:inline">Go Back</span>
+                    </a>
+                </div>
+                <div>
+                    <h1 class="md:text-xl text-lg p-4 font-semibold">
+                        <span id='current_room'>{{room.name}}</span> <span
+                            class="ml-3 font-extralight opacity-70 text-xs">By
+                            <a href="{%url 'profile' room.host %}"
+                                class="opacity-90 hover:scale-125">{{room.host}}</a></span>
+                    </h1>
+                </div>
+
+                <div class="inline-flex items-center">
+
+
+                    <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots"
+                        class=" inline-flex items-center  p-2 text-sm font-medium text-center text-gray-900 bg-gray-200 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                        type="button">
+                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                            viewBox="0 0 4 15">
+                            <path
+                                d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+                        </svg>
+                    </button>
+
+
+
+                    <!-- Dropdown menu -->
+                    <div id="dropdownDots"
+                        class=" hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-28 dark:bg-gray-700 dark:divide-gray-600">
+                        <ul class=" py-2 text-sm text-gray-700 dark:text-gray-200"
+                            aria-labelledby="dropdownMenuIconButton">
+                            <div class="flex flex-col justify-center ">
+
+
+
+
+                                <li class="my-2 mb-4 ml-2">
+                                    {% if request.user not in participants %}
+                                    <button id="join"
+                                        class="bg-green-700 hover:scale-110  rounded-lg px-2 font-semibold inline-flex items-center py-1"><i
+                                            class="fa-plus fa-solid "></i><span class="ml-1">Join</span></button>
+
+
+                                    <button data-modal-target="leave-room" data-modal-toggle="leave-room" id="leave"
+                                        class="hidden bg-red-700 hover:scale-110 rounded-lg px-2 font-semibold items-center h-3/4"><i
+                                            class="fa-sign-out fa-solid "></i><span class="ml-1">
+                                            Leave</span></button>
+
+                                    {%else%}
+                                    <button data-modal-target="leave-room" data-modal-toggle="leave-room" id="leave"
+                                        class="modal-btn bg-red-700 hover:scale-110 rounded-lg px-2 font-semibold inline-flex items-center py-1 h-3/4"><i
+                                            class="fa-sign-out fa-solid "></i><span class="ml-1">
+                                            Leave</span></button>
+
+
+                                    <button id="join"
+                                        class="bg-green-700 hover:scale-110 rounded-lg px-2 font-semibold hidden items-center py-1"><i
+                                            class="fa-plus fa-solid "></i><span class="ml-1">Join</span></button>
+
+                                    {%endif%}
+
+
+                                </li>
+                                <hr class="h-px bg-gray-100 border-0 dark:bg-gray-700">
+
+                                <li>
+
+                                    <!-- Dropdown menu -->
+                                    <div id="CopyDropDown"
+                                        class="z-10 hidden bg-white rounded-lg shadow w-[22rem] dark:bg-gray-700">
+                                        <div class="p-3 mx-2">
+                                            <div class="relative">
+                                                <input type="text" id="input-group-search"
+                                                    class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                    disabled>
+                                            </div>
+                                            <div class="absolute inset-y-0 right-0 flex items-center pl-3 ">
+                                                <button id="copy-invite-link" type="button"
+                                                    class="bg-blue-700 p-2 hover:cursor-pointer font-bold rounded mr-2">Copy</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+
+
+
+
+                                    <button id="CopyDropDownBtn" data-dropdown-toggle="CopyDropDown"
+                                        data-dropdown-placement="bottom"
+                                        data-link="{%if room.private %}{{room.invite_code}}{%else%}{{room.slug}}{%endif%}"
+                                        class="ml-3 inline-flex items-center"><svg width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path class="dark:stroke-white stroke-black"
+                                                d="M13.5442 10.4558C11.8385 8.75022 9.07316 8.75022 7.36753 10.4558L4.27922 13.5442C2.57359 15.2498 2.57359 18.0152 4.27922 19.7208C5.98485 21.4264 8.75021 21.4264 10.4558 19.7208L12 18.1766"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path class="dark:stroke-white stroke-black"
+                                                d="M10.4558 13.5442C12.1614 15.2498 14.9268 15.2498 16.6324 13.5442L19.7207 10.4558C21.4264 8.75021 21.4264 5.98485 19.7207 4.27922C18.0151 2.57359 15.2497 2.57359 13.5441 4.27922L12 5.82338"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+
+                                        </svg>&nbsp Invite</button>
+                            </div>
+                            </li>
+                            <hr class="h-px bg-gray-100 border-0 dark:bg-gray-700">
+
+                    </div>
+
+                    <button class="md:hidden block" id="toggle-participants-mobile">
+                        <div><i class="fa fa-users m-4 text-xl"></i></div>
+                    </button>
+
+                    <button class="hidden md:block" id="toggle-participants">
+                        <div><i class="fa fa-users m-4 text-xl"></i></div>
+                    </button>
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class=" flex ">
+        <div id="msg-container" class=" my-20 duration-700 md:w-[80vw] w-[100vw]">
+
+            <input type="text" id="rf" class="opacity-0 w-0 h-0">
+            <center id="loadmore-center">
+                <button id="loadmore">
+                    <div class="text-xs my-4 opacity-50">Load More <i class="fa-plus fa-solid"></i>
+                    </div>
+                </button>
+            </center>
+            <hr class="h-px mt-1 bg-gray-100 border-0 dark:bg-gray-700">
+
+            <div id="chat-messages" class="md:mx-10 mx-5 ">
+                {%for message in room_messages %}
+                <div class="counter" id="{{ forloop.counter0 }}">
+                    <div id="msg-{{message.id}}">
+                        <div class="w-full my-4 flex justify-between">
+                            {% pfp_info message.user as user_info %}
+
+
+                            <div class="w-[14vw] min-[400px]:w-[10vw] sm:w-[8vw] md:w-[6vw] lg:w-[5vw] mr-1 ">
+                                <a href="{% url 'profile' message.user %}"><img src="{{user_info.pfp_crop.url}}"
+                                        alt="img" class="md:w-12 md:h-12 w-10 h-10 shadow-xl rounded-full object-cover">
+                                </a>
+                            </div>
+
+                            <div class="w-[85vw] sm:w-[92vw] md:w-[94vw]">
+
+                                <div class="flex justify-between">
+
+                                    <div>
+
+                                        <small> <a href="{% url 'profile' message.user %}">@{{message.user}} </a>,
+                                            <span data-time="{{ message.created|date:'Y-m-d\TH:i:s\Z' }}"
+                                                class="time-updated opacity-70 text-xs">
+                                            </span>
+                                            <span class="is-edited text-xs opacity-50">
+
+                                                {%if message.edited %}
+                                                (edited)
+                                                {%endif%}
+                                            </span>
+
+                                        </small>
+
+                                        <p class="msg-paragraph" style="word-wrap:break-word;word-break: break-word;">
+                                            {{message.body}}
+                                        </p>
+                                    </div>
+
+
+                                    <div class="flex ">
+                                        {%if message.user == request.user %}
+                                        <button class="mx-2 edit-msg" data-message-id="{{message.id}}"><i
+                                                class="fa-pen fa-solid text-xs md:text-base "></i></button>
+
+                                        <button class="mx-2 edit-done hidden" data-message-id="{{message.id}}"><i
+                                                class="fa-check fa-solid text-xs md:text-base "></i></button>
+                                        <button class="delete-msg" data-message-id="{{message.id}}"><i
+                                                class="fa-trash text-xs md:text-base text-red-700 fa-solid"></i></button>
+                                        {%endif%}
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+                        </div>
+                        <hr class="h-px mt-1 bg-gray-100 border-0 dark:bg-gray-700">
+                    </div>
+                </div>
+                {%endfor%}
+            </div>
+        </div>
+
+        <div>
+            <div id="participants"
+                class=" mt-[60px] z-[1] md:w-[16vw] w-[30vw] md:block hidden fixed right-0 dark:bg-gray-800 bg-gray-200 h-full">
+                <h2 class="md:text-xl text-xs text-center font-semibold p-4">Participants<span
+                        class="opacity-70 text-xs">-
+                        {{participants | length}}</span>
+
+                </h2>
+                <hr class="h-px bg-gray-100 border-0 dark:bg-gray-700">
+
+                <div id="participants-members">
+
+                    {%for user in room.participants.all %}
+                    <div class="py-2 mx-1 text-center font-extralight text-sm opacity-80">
+                        <a href="{%url 'profile' user.username %}">
+                            {{user.username}}
+                        </a>
+                    </div>
+                    <hr class="h-px bg-gray-100 border-0 dark:bg-gray-700">
+                    {%endfor%}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    {% if request.user.is_authenticated %}
+    <div class="fixed z-0">
+        <form action="" method="post" id="chat-form">
+            <div id="chat-div"
+                class="comment-form dark:bg-primary-darker bg-gray-200 p-2 pb-3 flex items-center fixed bottom-0 shadow-lg w-full md:w-[85%]">
+
+
+                {%csrf_token%}
+                <input autocomplete="off" id="chat-input"
+                    class="bg-gray-50 border w-[95%] border-gray-300 text-gray-900 text-sm rounded-lg block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 emojionearea"
+                    type="text" name="message" placeholder="Type Message">
+
+
+                <button id="send-msg-btn" type="submit" class="w-[5%] md:mr-2 mr-4">
+                    <div>
+                        <svg class="ml-2 w-5 h-5 dark:fill-white fill-black opacity-80" viewBox="0 0 32 32"
+                            version="1.1" xmlns="http://www.w3.org/2000/svg">
+                            <title>send message</title>
+                            <path
+                                d="M31.083 16.589c0.105-0.167 0.167-0.371 0.167-0.589s-0.062-0.421-0.17-0.593l0.003 0.005c-0.030-0.051-0.059-0.094-0.091-0.135l0.002 0.003c-0.1-0.137-0.223-0.251-0.366-0.336l-0.006-0.003c-0.025-0.015-0.037-0.045-0.064-0.058l-28-14c-0.163-0.083-0.355-0.132-0.558-0.132-0.691 0-1.25 0.56-1.25 1.25 0 0.178 0.037 0.347 0.104 0.5l-0.003-0.008 5.789 13.508-5.789 13.508c-0.064 0.145-0.101 0.314-0.101 0.492 0 0.69 0.56 1.25 1.25 1.25 0 0 0 0 0.001 0h-0c0.001 0 0.002 0 0.003 0 0.203 0 0.394-0.049 0.563-0.136l-0.007 0.003 28-13.999c0.027-0.013 0.038-0.043 0.064-0.058 0.148-0.088 0.272-0.202 0.369-0.336l0.002-0.004c0.030-0.038 0.060-0.082 0.086-0.127l0.003-0.006zM4.493 4.645l20.212 10.105h-15.88zM8.825 17.25h15.88l-20.212 10.105z">
+                            </path>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+        </form>
+    </div>
+    {%else%}
+    <div class="mb-10 text-center text-blue-600 text-lg font-semibold  hover:scale-125 ">
+        <button class="modal-btn" data-target="signup-modal" data-modal-target="signup-modal"
+            data-modal-toggle="signup-modal" type="button">
+            Login to Chat
+        </button>
+    </div>
+
+    {%endif%}
+    </div>
+
+    {%include 'base/components/modals.html'%}
+
+</body>
+<script type="text/javascript">     window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+
+</html>

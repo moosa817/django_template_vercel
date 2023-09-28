@@ -1,0 +1,171 @@
+{% extends 'main.html' %}
+{%load static%}
+
+{%block title%}Home page{%endblock%}
+{%block content %}
+
+
+
+<div class="grid grid-flow-col grid-cols-12">
+
+    <!-- topic -->
+    {% include 'base/components/topics.html'%}
+
+    <div class="md:col-span-7 col-span-12">
+        <div class="flex justify-center mt-10">
+            <img class="w-32 h-32 rounded-full object-cover border border-primary-glow-green"
+                src="{{user_info.pfp.url}}" alt="Pfp photo">
+        </div>
+        <div class="text-center mt-2 text-xl font-semibold">{{user_info.name}}</div>
+        <div class="text-center mt-1 text-sm text-primary-glow-green opacity-60">@{{request.user}}</div>
+
+        {% if user.is_authenticated %}
+        <div class="flex justify-center">
+            <a href="{%url 'account'%}">
+                <button class=" relative inline-flex items-center justify-center mt-2 p-0.5 mb-2 mr-2 overflow-hidden text-sm
+        font-medium
+        text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-primary-glow-green group-hover:from-green-200
+        group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200
+        dark:focus:ring-green-800">
+                    <span
+                        class="relative px-4 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-primary-darktheme rounded-md group-hover:bg-opacity-0">
+                        Edit Profile
+                    </span>
+                </button>
+            </a>
+        </div>
+        {%endif%}
+
+        <div id="MyRooms">
+            <div class="ml-10 mt-10 text-xl text-gray-500 uppercase">rooms hosted by {{request.user}}</div>
+
+            <div class="mx-10 mb-10">
+                <div class="sm:flex my-5 items-center">
+                    <div class="md:text-lg text-sm text-gray-500">Rooms Available: {{rooms.count}}</div>
+                    <div class="sm:ml-6 ">
+                        <button id="dropdownRadioButton" data-dropdown-toggle="dropdownRadio"
+                            class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                            type="button">
+                            <span>
+                                All Rooms
+                            </span>
+                            <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="m1 1 4 4 4-4" />
+                            </svg>
+                        </button>
+                        <!-- Dropdown menu -->
+                        <div id="dropdownRadio"
+                            class="z-[103] hidden w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
+                            data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="top"
+                            style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate3d(522.5px, 3847.5px, 0px);">
+                            <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200"
+                                aria-labelledby="dropdownRadioButton">
+                                <li>
+                                    <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                                        <input checked="" id="all" type="radio" value="all" name="filter"
+                                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <label for="filter-radio-example-1"
+                                            class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">All
+                                            Rooms</label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                                        <input id="private" type="radio" value="private" name="filter"
+                                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <label for="filter-radio-example-2"
+                                            class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Private
+                                            Rooms</label>
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="md:my-0 my-2 ml-auto">
+                        <a href="{%url 'create-room' %}?from=profile">
+                            <button type="button"
+                                class="text-white bg-gradient-to-r to-primary-glow-green from-green-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-primary-glow-green dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 hover:scale-110">Create
+                                Room</button>
+                        </a>
+                    </div>
+                </div>
+                {%for room in rooms %}
+
+                <div data-id="{{room.id}}"
+                    class="rooms items-center bg-white border border-gray-200 rounded-lg w-full hover:bg-gray-100 dark:border-gray-700 dark:bg-primary-darker dark:hover:bg-primary-theme my-5 shadow-md">
+
+
+                    <div class=" p-4 leading-normal">
+                        <div class="flex justify-between">
+                            <div>
+                                <img src="{% static 'img/guest.webp'%}" class="w-6 inline-block rounded-full"
+                                    alt="User pfp">
+                                <a href="{%url 'profile' room.host %}" class="text-gray-400">@{{room.host}}</a>
+                            </div>
+                            <div class="text-gray-400 text-sm">
+                                {{room.updated | timesince}} ago
+                            </div>
+                        </div>
+                        <a href="{%url 'room' room.slug %}/?from=profile">
+                            <h5 class="my-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                {{room.name}}
+                            </h5>
+                        </a>
+                        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{room.description}}</p>
+                        <hr>
+                        <div class="flex justify-between mt-2">
+                            <div class="mt-2">
+                                <i class="fa-regular fa-user w-3 opacity-50"></i>
+                                {{room.participants.all | length}} Joined
+
+                            </div>
+                            <a href="/?q={{room.topic}}" class="mt-1">
+                                <span
+                                    class="dark:bg-primary-darktheme bg-gray-300 p-2 rounded-3xl">{{room.topic}}</span>
+                            </a>
+
+
+                        </div>
+
+                        <div class="flex justify-end mt-3">
+
+                            {% if room.private %}
+                            <span title="Locked"
+                                class="locked ml-5 bg-gray-300 dark:bg-gray-800 rounded-full py-2 px-3"><i
+                                    class="fa-solid fa-lock"></i></span>{%endif%}
+                            {% if request.user == room.host %}
+
+                            <a class="mx-2" href=" {% url 'update-room' room.id %}?from=profile"><button type="button"
+                                    class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-3 py-2 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 hover:scale-110"><i
+                                        class="fa-solid fa-pen"></i></button></a>
+                            <a data-name="{{room.name}}" data-id="{{room.id}}" class="modal-btn delete-btn"
+                                data-modal-target="small-modal1" data-modal-toggle="small-modal1"><button type=" button"
+                                    class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-3 py-2 text-center  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 hover:scale-1"><i
+                                        class="fa-solid fa-trash"></i></button></a>
+
+                            {%endif%}
+                        </div>
+                    </div>
+                </div>
+                {%endfor%}
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+
+    {% include 'base/components/activity.html' %}
+
+</div>
+
+<script type="text/javascript">     window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+<script src="{% static 'js/home.js' %}" defer></script>
+
+{%endblock%}

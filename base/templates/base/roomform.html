@@ -1,0 +1,185 @@
+{% extends 'main.html' %}
+{%load static%}
+{% load guest_user %}
+{%block title%}Create Room{%endblock%}
+{%block content %}
+
+<nav class="flex ml-5 mt-5" aria-label="Breadcrumb">
+    <ol class="inline-flex items-center space-x-1 md:space-x-3">
+        <li class="inline-flex items-center">
+            <a href="/"
+                class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+                <i class="fa-solid fa-home opacity-50"></i>&nbsp; Home
+            </a>
+        </li>
+        {%if from_url == 'profile' %}
+        <li>
+            <div class="flex items-center">
+                <svg class="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m1 9 4-4-4-4" />
+                </svg>
+                <i class="fa-solid fa-user opacity-50"></i>
+                <a href="{%url 'profile' request.user %}"
+                    class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white">Profile
+                </a>
+            </div>
+        </li>
+        {%endif%}
+        {%if from_url == 'joined-rooms' %}
+        <li>
+            <div class="flex items-center">
+                <svg class="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m1 9 4-4-4-4" />
+                </svg>
+                <a href="{%url 'joined-rooms' %}"
+                    class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white">Joined
+                    Rooms
+                </a>
+            </div>
+        </li>
+        {%endif%}
+
+
+
+
+
+
+        <li>
+            <div class="flex items-center">
+                <svg class="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m1 9 4-4-4-4" />
+                </svg>
+                {% if updateRoom%}
+                <a href="."
+                    class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white">
+                    Update Room
+                </a>
+                {%else%}
+                <a href="{%url 'create-room' %}"
+                    class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white">
+                    Create Room
+                </a>
+
+                {%endif%}
+            </div>
+        </li>
+
+    </ol>
+</nav>
+
+
+
+
+<div class="mx-auto w-3/4 lg:w-1/2">
+    <div class="bg-gray-200 dark:bg-gray-800 rounded my-10 p-8 shadow-2xl">
+
+        <form method="POST" action="">
+            {% csrf_token %}
+            <div class="my-4">
+                <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Room
+                    Name</label>
+                <input type="text" name="name" id="roomname"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Enter Room Name" required value="{{form.name.value}}">
+
+                {% if form.errors.name %}
+                <div class="text-xs text-red-700">{{ form.errors.name }}</div>
+                {% endif %}
+            </div>
+
+            <div>
+                <meta id="current_topic" data-topic="{{current_topic}}">
+                <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Topic</label>
+                <input
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Choose/Create Topic" required type="text" name="topic" list="topic-list" value="f"
+                    id="topic-choose">
+                <datalist id="topic-list" value="{{current_topic}}">
+                    {% for topic in topics %}
+                    <option value="{{ topic.name }}">{{ topic.name }}</option>
+                    {% endfor %}
+                </datalist>
+                {% if form.errors.topic %}
+                <div class="text-xs text-red-700">{{ form.errors.topic }}</div>
+                {% endif %}
+            </div>
+
+
+            <div class="my-2">
+                <label for="message"
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                <textarea id="message" name="description" rows="4"
+                    class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Write about the room">{{form.description.value}}</textarea>
+                {% if form.errors.description %}
+                <div class="text-xs text-red-700">{{ form.errors.description }}</div>
+                {% endif %}
+            </div>
+            <div class="flex mb-4">
+                <div>
+                    <input checked id="default-radio-1" type="radio" value="False" name="private"
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <label for="default-radio-1"
+                        class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Public Room</label>
+
+                </div>
+                {% if user|is_guest_user %}
+                <div class=" ml-10">
+                    <input disabled id="default-radio-2" type="radio" value="True" name="private"
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <label for="default-radio-2"
+                        class="ml-2 text-xs opacity-50 font-medium text-gray-900 dark:text-gray-300">Private
+                        Room
+                        (Signup To Use
+                        This)</label>
+                </div>
+                {%else%}
+                <div class="ml-10">
+                    <input id="default-radio-2" type="radio" value="True" name="private"
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <label for="default-radio-2"
+                        class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Private
+                        Room </label>
+                </div>
+
+                {%endif%}
+
+            </div>
+
+
+            <div class="w-full pt-2">
+
+                <button type="submit"
+                    class="text-white bg-gradient-to-r w-full to-primary-glow-green from-green-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-primary-glow-green dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 hover:scale-105">
+                    {% if updateRoom%}
+                    Update Room
+                    {%else%}
+                    Create Room
+                    {%endif%}
+
+                </button>
+            </div>
+
+
+
+        </form>
+
+
+    </div>
+</div>
+{%if not form.name.value%}
+<script>
+    $('#roomname').val('')
+    $('#message').val('')
+</script>
+
+{%endif%}
+
+
+{% endblock %}

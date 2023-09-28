@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz@6..12&display=swap');
+
+body {
+    overflow-x: hidden;
+}
+
+#content {
+    font-family: 'Nunito Sans', sans-serif;
+    overflow: hidden;
+}
+
+
+
+.blurPage {
+    filter: blur(5px)
+}
+
+.trans-btn {
+    width: 15vw;
+    text-align: center;
+    padding: 10px;
+    background: transparent;
+    /* Old browsers */
+    background: linear-gradient(to left, transparent 50%, #51ff0d 50%);
+    background-size: 200% 100%;
+    background-position: right bottom;
+    transition: all .7s ease;
+}
+
+.trans-btn:hover {
+    background-position: left bottom;
+    color: whitesmoke;
+}
+
+
+.trans-btn-full {
+    width: 15vw;
+    text-align: center;
+    padding: 10px;
+    background: transparent;
+    /* Old browsers */
+    background: linear-gradient(to left, transparent 50%, #51ff0d 50%);
+    background-size: 200% 100%;
+    background-position: right bottom;
+    transition: all .7s ease;
+    background-position: left bottom;
+    color: whitesmoke;
+}
+
+
+/* for image pfp */
+.profile-pic {
+    color: transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.profile-pic input {
+    display: none;
+}
+
+.profile-pic img {
+    position: absolute;
+    object-fit: cover;
+    width: 165px;
+    height: 165px;
+    box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.35);
+    border-radius: 100px;
+    z-index: 0;
+}
+
+.profile-pic .-label {
+    cursor: pointer;
+    height: 165px;
+    width: 165px;
+}
+
+.profile-pic:hover .-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    color: #fafafa;
+    transition: background-color 0.2s ease-in-out;
+    border-radius: 100px;
+    margin-bottom: 0;
+}
+
+.profile-pic span {
+    display: inline-flex;
+    padding: 0.2em;
+    height: 2em;
+}

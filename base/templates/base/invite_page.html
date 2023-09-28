@@ -1,0 +1,55 @@
+{% extends 'main.html' %}
+{%block content%}
+
+
+<div class="grid grid-flow-col grid-cols-12">
+
+    <!-- topic -->
+    {% include 'base/components/topics.html'%}
+
+    <div class="md:col-span-7 col-span-12">
+
+        <div class="flex justify-center items-center flex-col mt-40">
+
+            <div>
+                <h5 class="text-3xl font-semibold">Join Room</h5>
+            </div>
+
+            <div>Join Room By Invite URL</div>
+            <form id="invite-form" class=" w-[80%] md:w-[60%] flex justify-center flex-col items-center">
+
+
+
+                <input class="control-form" id="inviteurl" placeholder="" />
+                <button class="font-semibold bg-green-400 w-3/4 p-2 my-2 rounded" type="submit">Join</button>
+            </form>
+        </div>
+    </div>
+
+    {% include 'base/components/activity.html' %}
+
+</div>
+
+<script>
+    function isValidInviteURL(url) {
+        var origin = window.location.origin;
+        var regex = new RegExp('^' + origin + '/invite/[a-zA-Z0-9]{1,6}$');
+        return regex.test(url);
+    }
+    let placeholder_url = window.location.origin + '/invite/abcdef'
+    $('#inviteurl').attr('placeholder', placeholder_url)
+
+    $('#invite-form').submit(function (e) {
+        e.preventDefault();
+
+
+        if (isValidInviteURL($('#inviteurl').val())) {
+            window.location.href = $('#inviteurl').val()
+        } else {
+            $('#error').show()
+            $('#myerror').text('Invalid URL')
+        }
+
+    })
+</script>
+{%endblock%}

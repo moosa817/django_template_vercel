@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import dj_database_url
 from dotenv import load_dotenv
-
+from os import getenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -30,7 +30,10 @@ SECRET_KEY = 'django-insecure-vc1k%i(bpnimo%ddb#a&xgncsac$3vn8qtoqvqq7v7%tyv+8(8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app']
+GUEST_USER_NAME_GENERATOR = 'guest_user.functions.generate_numbered_username'
+GUEST_USER_CONVERT_REDIRECT_URL = 'home'
+
+ALLOWED_HOSTS = ['1270.0.1', '*', '.vercel.app']
 
 
 # Application definition
@@ -42,8 +45,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'template_app'
+    'base.apps.BaseConfig',
+    'widget_tweaks',
+    'guest_user',
+    'imagekit'
 ]
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    # it should be the last entry to prevent unauthorized access
+    "guest_user.backends.GuestBackend",
+]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -129,7 +141,31 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+EMAIL_SENDER = getenv("EMAIL_SENDER")
+MAIL_PWD = getenv("SMTP_PWD")
+MAIL_EMAIL_RECIVER = getenv("EMAIL_RECIEVER")
+MAIL_SERVER = getenv("MAIL_SERVER")
+MAIL_PORT = 587
+MAIL_USER = getenv("MAIL_USER")
+
+
+# other settings
+
+ROOM_PAGE = int(getenv('ROOM_PAGE'))  # rooms to show per page
+MESSAGE_ROOM = int(getenv('MESSAGE_ROOM'))  # messages to show per room

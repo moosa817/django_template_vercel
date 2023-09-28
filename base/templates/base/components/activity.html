@@ -1,0 +1,18 @@
+<div class="md:col-span-3 col-span-0 hidden md:block my-10 z-10 ">
+    <div class="fixed lg:w-64 xl:w-[20rem]">
+
+        <h2 class="text-center text-xl font-semibold ">Recent Activities</h2>
+        <hr class=" border-primary-glow-green border-[-.5px] opacity-50 mb-4">
+
+        {%for message in info.room_messages %}
+        <small class="text-xs text-gray-400"><a href="{% url 'profile' message.user %}">@{{message.user}}</a>
+            {{message.updated|timesince}} ago in
+            <a class="text-blue-400" href="{%url 'room' message.room.id %}">{{message.room.name}}</a></small>
+        <div class="text-xs dark:bg-gray-900 bg-gray-200 p-2 rounded mr-4 break-words">
+            {{message.body}}
+        </div>
+        <hr class=" border-primary-glow-green border-[-.5px] opacity-50 my-3">
+
+        {%endfor%}
+    </div>
+</div>

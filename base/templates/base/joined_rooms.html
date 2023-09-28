@@ -1,0 +1,107 @@
+{% extends 'main.html' %}
+{%load static%}
+
+{%block title%}Home page{%endblock%}
+{%block content %}
+
+
+
+<div class="grid grid-flow-col grid-cols-12">
+
+    <!-- topic -->
+    {% include 'base/components/topics.html'%}
+
+    <div class="md:col-span-7 col-span-12">
+        <div id="MyRooms">
+            <div class="text-center mt-10 text-2xl text-gray-500 uppercase">rooms you joined</div>
+
+            <div class="mx-10 mb-10">
+
+                <div class="md:flex justify-between my-5 items-center">
+
+                    <div class="md:text-lg text-sm text-gray-500">Rooms Available: {{rooms | length}}</div>
+                    <div class="md:my-0 my-2">
+                        <a href="{%url 'create-room' %}?from=joined-rooms">
+                            <button type="button"
+                                class="text-white bg-gradient-to-r to-primary-glow-green from-green-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-primary-glow-green dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 hover:scale-110">Create
+                                Room</button>
+                        </a>
+                    </div>
+                </div>
+                {%for room in rooms %}
+
+                <div data-id="{{room.id}}"
+                    class=" items-center bg-white border border-gray-200 rounded-lg w-full hover:bg-gray-100 dark:border-gray-700 dark:bg-primary-darker dark:hover:bg-primary-theme my-5 shadow-md">
+
+
+                    <div class=" p-4 leading-normal">
+                        <div class="flex justify-between">
+                            <div>
+                                <img src="{% static 'img/guest.webp'%}" class="w-6 inline-block rounded-full"
+                                    alt="User pfp">
+                                <a href="{%url 'profile' room.host %}" class="text-gray-400">@{{room.host}}</a>
+                            </div>
+                            <div class="text-gray-400 text-sm">
+                                {{room.updated | timesince}} ago
+                            </div>
+                        </div>
+                        <a href="{%url 'room' room.slug %}?from=joined-rooms">
+                            <h5 class="my-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                {{room.name}}
+                            </h5>
+                        </a>
+                        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{room.description}}</p>
+                        <hr>
+                        <div class="flex justify-between mt-2">
+                            <div class="mt-2">
+                                <i class="fa-regular fa-user w-3 opacity-50"></i>
+                                {{room.participants.all | length}} Joined
+
+                            </div>
+                            <a href="/?q={{room.topic}}" class="mt-1">
+                                <span
+                                    class="dark:bg-primary-darktheme bg-gray-300 p-2 rounded-3xl">{{room.topic}}</span>
+                            </a>
+
+
+                        </div>
+
+                        <div class="flex justify-end mt-3">
+
+                            {% if room.private %}
+                            <span title="Locked" class="ml-5 bg-gray-800 rounded-full py-2 px-3"><i
+                                    class="fa-solid fa-lock"></i></span>
+                            {%endif%}
+                            {% if request.user == room.host %}
+
+                            <a class="mx-2" href=" {% url 'update-room' room.id %}?from=joined-rooms"><button
+                                    type="button"
+                                    class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-3 py-2 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 hover:scale-110"><i
+                                        class="fa-solid fa-pen"></i></button></a>
+                            <a data-name="{{room.name}}" data-id="{{room.id}}" class="modal-btn delete-btn"
+                                data-modal-target="small-modal1" data-modal-toggle="small-modal1"><button type=" button"
+                                    class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-3 py-2 text-center  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 hover:scale-1"><i
+                                        class="fa-solid fa-trash"></i></button></a>
+
+                            {%endif%}
+                        </div>
+                    </div>
+                </div>
+                {%endfor%}
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+
+    {% include 'base/components/activity.html' %}
+
+</div>
+
+<script type="text/javascript">     window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+<script src="{% static 'js/home.js' %}" defer></script>
+
+{%endblock%}

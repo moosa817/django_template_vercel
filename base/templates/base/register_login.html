@@ -1,0 +1,198 @@
+{% extends 'main.html' %}
+{% load widget_tweaks %}
+
+{%block content%}
+{% if page == 'login' %}
+
+<div class="flex items-center justify-center flex-col mt-5">
+
+
+    <div class=" dark:bg-gray-800 bg-gray-200 rounded-lg shadow-2xl mt-10">
+        <h1
+            class="my-5 font-bold text-center text-transparent text-3xl bg-clip-text bg-gradient-to-r from-green-800 to-primary-glow-green mt-10">
+            Sign in
+        </h1>
+
+        <form action="" method="POST" class="mt-4 w-[85vw] md:w-[50vw] px-4 md:px-24 py-10 ">
+            {%csrf_token%}
+
+            <label for="username" class="block my-2 ml-1 text-sm font-medium text-gray-900 dark:text-white">Username or
+                Email</label>
+            <input type="text" name="username" placeholder="Enter Username or Email" class="control-form"
+                value="{{username}}">
+
+            <label for="password"
+                class="block my-2 ml-1 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+
+
+            <div class="relative w-full">
+                <div class="js-password-toggle absolute inset-y-0 right-0 flex items-center px-2">
+                    <label class=" rounded px-2 py-1 text-sm text-gray-600 font-mono cursor-pointer js-password-label"
+                        for="toggle">
+                        <svg class="w-5 eye-show" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z"
+                                stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <path
+                                d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z"
+                                stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+
+                    </label>
+                </div>
+                <input class="appearance-none control-form font-mono js-password" id="password" type="password"
+                    name="password" placeholder="Enter Password" value="{{password}}" autocomplete="off" />
+            </div>
+
+            <div class="text-xs mb-2 text-blue-500 underline float-right"><a href="{%url 'forgot'%}">Forgot
+                    password?</a></div>
+
+            <button type="submit"
+                class="text-white bg-gradient-to-r w-full to-primary-glow-green from-green-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-primary-glow-green dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 my-2 hover:scale-105 ">Login
+            </button>
+            <div class="text-center mb-10 text-sm opacity-90">
+                Don't Have an Account?<a href="{% url 'register' %}" class="font-semibold text-blue-400">Register</a>
+            </div>
+            {% if messages %}
+            {% for message in messages %}
+            <div class="text-red-600 text-semibold text-center">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+
+
+            <div class="text-center mb-10 text-sm opacity-90">
+                <a href="{% url 'guest_user_convert_success' %}" class="font-semibold text-blue-400">Sign in as guest
+                    instead</a>
+            </div>
+        </form>
+
+    </div>
+
+    {%else%}
+
+
+    <div class="flex items-center justify-center flex-col mt-5">
+        <div class=" dark:bg-gray-800 bg-gray-200 rounded-lg shadow-2xl">
+            <h1
+                class="my-5 font-bold text-center text-transparent text-3xl bg-clip-text bg-gradient-to-r from-green-800 to-primary-glow-green">
+                Signup
+            </h1>
+
+            <form action="" method="POST" class="mt-4 w-[87vw] md:w-[50vw] px-4 md:px-24">
+                {%csrf_token%}
+
+                <label for="username"
+                    class="block my-2 ml-1 text-sm font-medium text-gray-900 dark:text-white">Username</label>
+                {% render_field UserForm.username class+="control-form" placeholder+="Enter Username" %}
+                {% if UserForm.errors.username %}
+                <div class="text-xs text-red-700">{{ UserForm.errors.username }}</div>
+                {% endif %}
+
+
+
+                <label for="email"
+                    class="block my-2 ml-1 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                {% render_field ProfileForm.email class+="control-form" placeholder+="abc@xyz.com" %}
+
+                {% if ProfileForm.errors.email %}
+                <div class="text-xs text-red-700">{{ ProfileForm.errors.email }}</div>
+                {% endif %}
+
+
+                <label for="password"
+                    class="block my-2 ml-1 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+
+
+                <div class="relative w-full">
+                    <div class="js-password-toggle absolute inset-y-0 right-0 flex items-center px-2">
+                        <label
+                            class=" rounded px-2 py-1 text-sm text-gray-600 font-mono cursor-pointer js-password-label"
+                            for="toggle">
+                            <svg class="w-5 eye-show" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z"
+                                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z"
+                                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+
+                        </label>
+                    </div>
+                    <input class="appearance-none control-form font-mono js-password" id="password1" type="password"
+                        name="password1" placeholder="Enter Password" autocomplete="off" />
+                </div>
+
+                {% if UserForm.errors.password1 %}
+                <div class="text-xs text-red-700">{{ UserForm.errors.password1 }}</div>
+                {% endif %}
+
+
+                <label for="password" class="block my-2 ml-1 text-sm font-medium text-gray-900 dark:text-white">Confirm
+                    Password</label>
+
+
+                <div class="relative w-full">
+                    <div class="js-password-toggle absolute inset-y-0 right-0 flex items-center px-2">
+                        <label
+                            class=" rounded px-2 py-1 text-sm text-gray-600 font-mono cursor-pointer js-password-label"
+                            for="toggle">
+                            <svg class="w-5 eye-show" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z"
+                                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z"
+                                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+
+                        </label>
+                    </div>
+                    <input class="appearance-none control-form font-mono js-password" id="password2" type="password"
+                        name="password2" placeholder="Enter Confirm Password" autocomplete="off" />
+                </div>
+
+
+                {% if UserForm.errors.password2 %}
+                <div class="text-xs text-red-700">{{ UserForm.errors.password2 }}</div>
+                {% endif %}
+
+
+
+
+
+
+
+                <button type="submit"
+                    class="text-white bg-gradient-to-r w-full to-primary-glow-green from-green-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-primary-glow-green dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 my-2 hover:scale-105 ">Register
+                </button>
+                <div class="text-center mb-10 text-sm opacity-90">
+                    Have an Account?<a href="{% url 'login' %}" class="font-semibold text-blue-400"> Login</a>
+                </div>
+
+                <div class="text-center mb-10 text-sm opacity-90">
+                    <a href="{% url 'guest_user_convert_success' %}" class="font-semibold text-blue-400">Sign in as
+                        guest instead</a>
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+    {%endif%}
+    <script>
+
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+
+
+
+    </script>
+
+
+    {%endblock%}
